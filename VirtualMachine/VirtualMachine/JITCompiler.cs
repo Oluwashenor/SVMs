@@ -36,23 +36,40 @@ internal static class JITCompiler
         #region TASK 1 - TO BE IMPLEMENTED BY THE STUDENT
         try
         {
-            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assemblies)
+            string svmExecutableDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            string[] assemblyFiles = Directory.GetFiles(svmExecutableDirectory, "*.dll");
+            
+            foreach (string assemblyFile in assemblyFiles)
             {
-                Type classType = assembly.GetTypes().FirstOrDefault(a=>a.Name.Equals(opcode, StringComparison.OrdinalIgnoreCase));  
-                if (classType != null)
+                try
                 {
-                    object instance = Activator.CreateInstance(classType);
-                    instruction = (IInstruction)instance;
-                    break;
+                    Assembly assembly = Assembly.LoadFrom(assemblyFile);
+                    Type classType = assembly.GetTypes()
+                        .FirstOrDefault(a => a.Name.Equals(opcode, StringComparison.OrdinalIgnoreCase) &&
+                                             typeof(IInstruction).IsAssignableFrom(a) && !a.IsAbstract);
+
+                    if (classType != null)
+                    {
+                        object instance = Activator.CreateInstance(classType);
+                        instruction = (IInstruction)instance;
+                        break;
+                    }
+                }
+                catch (Exception)
+                {
+                    // Handle any exceptions related to loading assemblies or finding types
                 }
             }
+
             if (instruction == null)
             {
                 throw new SvmRuntimeException("No matching instruction found for opcode: " + opcode);
             }
         }
-        catch (Exception ex) { }
+        catch (Exception ex)
+        {
+            // Handle any exceptions that may occur during the process
+        }
         #endregion
         return instruction;
     }
@@ -64,17 +81,30 @@ internal static class JITCompiler
         #region TASK 1 - TO BE IMPLEMENTED BY THE STUDENT
         try
         {
-            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assemblies)
+            string svmExecutableDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            string[] assemblyFiles = Directory.GetFiles(svmExecutableDirectory, "*.dll");
+           
+
+            foreach (string assemblyFile in assemblyFiles)
             {
-                Type classType = assembly.GetTypes().FirstOrDefault(a => a.Name.Equals(opcode, StringComparison.OrdinalIgnoreCase));
-                if (classType != null)
+                try
                 {
-                    object instance = Activator.CreateInstance(classType);
-                    instruction = (IInstructionWithOperand)instance;
-                    instruction.Operands = operands;
-                    //instruction.VirtualMachine = null;
-                    break;
+                    Assembly assembly = Assembly.LoadFrom(assemblyFile);
+                    Type classType = assembly.GetTypes()
+                        .FirstOrDefault(a => a.Name.Equals(opcode, StringComparison.OrdinalIgnoreCase) &&
+                                             typeof(IInstruction).IsAssignableFrom(a) && !a.IsAbstract);
+                    if (classType != null)
+                    {
+                        object instance = Activator.CreateInstance(classType);
+                        instruction = (IInstructionWithOperand)instance;
+                        instruction.Operands = operands;
+                        //instruction.VirtualMachine = null;
+                        break;
+                    }
+                }
+                catch (Exception)
+                {
+                    // Handle any exceptions related to loading assemblies or finding types
                 }
             }
             if (instruction == null)
