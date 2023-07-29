@@ -6,29 +6,22 @@ using System.Threading.Tasks;
 
 namespace SVM.SimpleMachineLanguage
 {
-    public class BltInt : BaseInstructionWithOperand
+    public class NotEqu : BaseInstructionWithOperand
     {
         #region IInstruction Members
 
         public override void Run()
         {
-            int opValue;
-            if (!Int32.TryParse(this.Operands[0].ToString(), out opValue))
-            {
-                throw new SvmRuntimeException(String.Format(BaseInstruction.OperandOfWrongTypeMessage,
-                                                this.ToString(), VirtualMachine.ProgramCounter));
-            }
+            
             var op1 = VirtualMachine.Stack.Pop();
+            var op2 = VirtualMachine.Stack.Pop();
             VirtualMachine.Stack.Push(op1);
-            if (op1 is int)
+            if (op1.GetType() != op2.GetType())
             {
-                if (opValue < (int)op1)
-                {
                     string branch_location = this.Operands[1].ToString();
                     SvmVirtualMachine svmVm = (SvmVirtualMachine)this.VirtualMachine;
                     LabelMap eventLabel = svmVm.LabelMaps.FirstOrDefault(x => x.label == branch_location);
                     svmVm.ProgramCounter = eventLabel.postion - 1;
-                }
             }
             else
             {

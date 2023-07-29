@@ -89,6 +89,21 @@ public sealed class SvmVirtualMachine : IVirtualMachine
         {
             return programCounter;
         }
+        set
+        {
+            programCounter = value;
+        }
+    }
+
+    public List<LabelMap> LabelMaps
+    {
+        #region TASK 1 - TO BE IMPLEMENTED BY THE STUDENT
+
+        #endregion
+        get
+        {
+            return labelMaps;
+        }
     }
     #endregion
 
@@ -158,20 +173,15 @@ public sealed class SvmVirtualMachine : IVirtualMachine
 
         for (int i = 0; i < program.Count; i++)
         {
+            programCounter = i;
             if (breakPoints.Contains(i))
             {
                 IDebugFrame frame = new DebugFrame(program[i],program, i, this.Stack);
                 debugger.Break(frame);
             }
-            
-            if (program[i] is BltInt)
-            {
-                var branch_location = program[i].ToString().Split(' ')[2].ToString();
-                LabelMap eventLabel = labelMaps.FirstOrDefault(x => x.label == branch_location);
-                i = eventLabel.postion;
-            }
             program[i].VirtualMachine = this;
             program[i].Run();
+            i = programCounter;
         }
         #region TASKS 5 & 7 - MAY REQUIRE MODIFICATION BY THE STUDENT
         // For task 5 (debugging), you should construct a IDebugFrame instance and

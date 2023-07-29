@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SVM.SimpleMachineLanguage
 {
-    public class EquInt : BaseInstructionWithOperand
+    public class BgrInt : BaseInstructionWithOperand
     {
         #region IInstruction Members
 
@@ -20,12 +20,15 @@ namespace SVM.SimpleMachineLanguage
             }
             var op1 = VirtualMachine.Stack.Pop();
             VirtualMachine.Stack.Push(op1);
-            if (opValue == (int)op1)
+            if (op1 is int)
             {
-                string branch_location = this.Operands[1].ToString();
-                SvmVirtualMachine svmVm = (SvmVirtualMachine)this.VirtualMachine;
-                LabelMap eventLabel = svmVm.LabelMaps.FirstOrDefault(x => x.label == branch_location);
-                svmVm.ProgramCounter = eventLabel.postion - 1;
+                if (opValue > (int)op1)
+                {
+                    string branch_location = this.Operands[1].ToString();
+                    SvmVirtualMachine svmVm = (SvmVirtualMachine)this.VirtualMachine;
+                    LabelMap eventLabel = svmVm.LabelMaps.FirstOrDefault(x => x.label == branch_location);
+                    svmVm.ProgramCounter = eventLabel.postion - 1;
+                }
             }
             else
             {
