@@ -22,6 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HashGenerator\HashGenerator.csproj" />
     <ProjectReference Include="..\SVM.DebuggerUI\SVM.DebuggerUI.csproj" />
   </ItemGroup>
 

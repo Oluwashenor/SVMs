@@ -1,10 +1,14 @@
 ﻿namespace SVM.VirtualMachine;
 
+using HashGenerator;
 using SVM.SimpleMachineLanguage;
 using System.Globalization;
 
 #region Using directives
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 #endregion
 
 /// <summary>
@@ -41,6 +45,11 @@ internal static class JITCompiler
             
             foreach (string assemblyFile in assemblyFiles)
             {
+                bool matched = VerifyAssembly(assemblyFile);
+                if (!matched)
+                {
+                    throw new SvmRuntimeException("Invalid Hash Values : please update the config file" + opcode);
+                }
                 try
                 {
                     Assembly assembly = Assembly.LoadFrom(assemblyFile);
@@ -57,8 +66,8 @@ internal static class JITCompiler
                 }
                 catch (Exception)
                 {
-                    // Handle any exceptions related to loading assemblies or finding types
-                }
+                        throw new SvmRuntimeException("Something went wrong " + opcode);
+                    }
             }
 
             if (instruction == null)
@@ -116,6 +125,37 @@ internal static class JITCompiler
         catch (Exception ex) { }
         #endregion
         return instruction;
+    }
+
+
+
+    public static bool VerifyAssembly(string assembly)
+    {
+        string configpath = @"C:\Users\Shenor\Downloads\Download SVM\SVM_-1769111514\SVM\VirtualMachine\";
+        string dllPath = @"C:\Users\Shenor\Downloads\Download SVM\SVM_-1769111514\SVM\bin\Debug\";
+        string assemblyFileName = Path.GetFileName(assembly);
+        string assemblyFile = Path.Combine(dllPath, assemblyFileName);
+        string configfile = "config.json";
+        string filePath = Path.Combine(configpath, configfile);
+        if (File.Exists(filePath))
+        {
+            string configFileContent = File.ReadAllText(filePath);
+            AllowedAssembly assemblyConfigs = JsonSerializer.Deserialize<AllowedAssembly>(configFileContent);
+            var currentAssembly = assemblyConfigs.AllowedAssemblies.FirstOrDefault(x => x.AssemblyName == assemblyFileName);
+            if (currentAssembly == null) return false;
+            byte[] data = File.ReadAllBytes(assemblyFile);
+            var dllExist = File.Exists(assemblyFile);
+            using SHA256 sha256 = SHA256.Create();
+            byte[] hashValue = sha256.ComputeHash(data);
+            string hashedValue = BitConverter.ToString(hashValue).Replace("-", "").ToLower();
+            if(hashedValue == currentAssembly.Hash)return true;
+            return false;
+        }
+        else
+        {
+            Console.WriteLine("File Not Found");
+            return false;
+        }
     }
     #endregion
 }

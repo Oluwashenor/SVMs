@@ -1,9 +1,10 @@
-﻿loadstring "Countdown from 10"
-displaystring
-loadint 10
-%removeOne% Decr
-loadstring "Count = "
+﻿loadstring "Calculating (2 + 3) - 1" 
+writestring 
+loadint 2 
+loadint 3 
+add 
+loadint 1 
+subtract 
+loadstring "The result is"
+writestring 
 writestring
-displaystring
-bltint 0 removeOne
-
