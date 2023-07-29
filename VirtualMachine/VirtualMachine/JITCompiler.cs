@@ -98,7 +98,6 @@ internal static class JITCompiler
                         object instance = Activator.CreateInstance(classType);
                         instruction = (IInstructionWithOperand)instance;
                         instruction.Operands = operands;
-                        //instruction.VirtualMachine = null;
                         break;
                     }
                 }

@@ -22,4 +22,9 @@
     <OutputPath>..\bin\Release</OutputPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SVM.DebuggerUI\SVM.DebuggerUI.csproj" />
+    <ProjectReference Include="..\VirtualMachine\SVM.csproj" />
+  </ItemGroup>
+
 </Project>

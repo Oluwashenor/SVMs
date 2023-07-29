@@ -29,7 +29,8 @@
         private void InitializeComponent()
         {
             button1 = new Button();
-            listView1 = new ListView();
+            instructionsBox = new ListBox();
+            listBox2 = new ListBox();
             SuspendLayout();
             // 
             // button1
@@ -42,21 +43,34 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
-            // listView1
+            // instructionsBox
             // 
-            listView1.Location = new Point(90, 41);
-            listView1.Name = "listView1";
-            listView1.Size = new Size(215, 295);
-            listView1.TabIndex = 1;
-            listView1.UseCompatibleStateImageBehavior = false;
-            listView1.SelectedIndexChanged += listView1_SelectedIndexChanged;
+            instructionsBox.FormattingEnabled = true;
+            instructionsBox.ItemHeight = 15;
+            instructionsBox.Location = new Point(110, 58);
+            instructionsBox.Name = "instructionsBox";
+            instructionsBox.Size = new Size(185, 244);
+            instructionsBox.TabIndex = 1;
+            instructionsBox.SelectedIndexChanged += listBox1_SelectedIndexChanged;
+            // 
+            // listBox2
+            // 
+            listBox2.FormattingEnabled = true;
+            listBox2.ItemHeight = 15;
+            listBox2.Items.AddRange(new object[] { "sample", "Kele", "Kele" });
+            listBox2.Location = new Point(514, 58);
+            listBox2.Name = "listBox2";
+            listBox2.Size = new Size(193, 244);
+            listBox2.TabIndex = 2;
+            listBox2.SelectedIndexChanged += listBox2_SelectedIndexChanged;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(listView1);
+            Controls.Add(listBox2);
+            Controls.Add(instructionsBox);
             Controls.Add(button1);
             Name = "Form1";
             Text = "Form1";
@@ -66,6 +80,7 @@
         #endregion
 
         private Button button1;
-        private ListView listView1;
+        private ListBox instructionsBox;
+        private ListBox listBox2;
     }
 }

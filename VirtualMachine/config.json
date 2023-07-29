@@ -1,0 +1,24 @@
+{
+  "AllowedAssemblies": [
+    {
+      "AssemblyName": "Debugger.dll",
+      "Hash": ""
+    },
+    {
+      "AssemblyName": "Microsoft.Windows.SDK.NET.dll",
+      "Hash": ""
+    },
+    {
+      "AssemblyName": "SML Extensions.dll",
+      "Hash": ""
+    },
+    {
+      "AssemblyName": "SVM.dll",
+      "Hash": ""
+    },
+    {
+      "AssemblyName": "WinRT.Runtime.dll",
+      "Hash": ""
+    }
+  ]
+}

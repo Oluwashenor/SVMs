@@ -1,5 +1,5 @@
 ﻿public interface IVirtualMachine
 {
-    int ProgramCounter { get; }
+    public int ProgramCounter { get; }
     Stack Stack { get; }
 }

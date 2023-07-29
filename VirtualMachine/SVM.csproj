@@ -22,6 +22,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SVM.DebuggerUI\SVM.DebuggerUI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Sample.sml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

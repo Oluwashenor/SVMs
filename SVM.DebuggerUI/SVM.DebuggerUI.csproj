@@ -8,8 +8,4 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\VirtualMachine\SVM.csproj" />
-  </ItemGroup>
-
 </Project>

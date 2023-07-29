@@ -1,4 +1,6 @@
-﻿/// <summary>
+﻿using SVM.SimpleMachineLanguage;
+using System.Text.RegularExpressions;
+/// <summary>
 /// Implements the Simple Virtual Machine (SVM) virtual machine 
 /// </summary>
 public sealed class SvmVirtualMachine : IVirtualMachine
@@ -12,7 +14,11 @@ public sealed class SvmVirtualMachine : IVirtualMachine
     #endregion
 
     #region Fields
-    private IDebugger debugger = null;
+    private SmlDebugger debugger = new SmlDebugger();
+    private IDebugFrame debugFrame = null;
+    private Dictionary<int, string> labelMap = new Dictionary<int, string>();
+    private List<LabelMap> labelMaps = new();
+    private List<int> breakPoints = new List<int>();
     private List<IInstruction> program = new List<IInstruction>();
     private Stack stack = new Stack();
     private int programCounter = 0;
@@ -145,14 +151,27 @@ public sealed class SvmVirtualMachine : IVirtualMachine
     /// 
     private void Run()
     {
+        var branchInstructions = new List<string> {"" };
         DateTime start = DateTime.Now;
 
         #region TASK 2 - TO BE IMPLEMENTED BY THE STUDENT
 
-        foreach (var inst in program)
+        for (int i = 0; i < program.Count; i++)
         {
-            inst.VirtualMachine = this;
-            inst.Run();
+            if (breakPoints.Contains(i))
+            {
+                IDebugFrame frame = new DebugFrame(program[i],program, i, this.Stack);
+                debugger.Break(frame);
+            }
+            
+            if (program[i] is BltInt)
+            {
+                var branch_location = program[i].ToString().Split(' ')[2].ToString();
+                LabelMap eventLabel = labelMaps.FirstOrDefault(x => x.label == branch_location);
+                i = eventLabel.postion;
+            }
+            program[i].VirtualMachine = this;
+            program[i].Run();
         }
         #region TASKS 5 & 7 - MAY REQUIRE MODIFICATION BY THE STUDENT
         // For task 5 (debugging), you should construct a IDebugFrame instance and
@@ -181,6 +200,25 @@ public sealed class SvmVirtualMachine : IVirtualMachine
         #endregion
 
         string[] tokens = null;
+
+        if (instruction.StartsWith('*'))
+        {
+            breakPoints.Add(lineNumber);
+            instruction = instruction.Trim('*');
+        }
+
+        if (instruction.StartsWith("%"))
+        {
+            string pattern = @"%(.+)%";
+            Match match = Regex.Match(instruction, pattern);
+            string label = match.Groups[1].Value;
+            instruction = Regex.Replace(instruction, @"%.*%", "");
+            labelMaps.Add(new LabelMap{
+                postion = lineNumber, label = label,
+            });
+            //labelMap[lineNumber] = label;
+        }
+
         if (instruction.Contains("\""))
         {
             tokens = instruction.Split(new char[] { '\"' }, StringSplitOptions.RemoveEmptyEntries);
@@ -197,6 +235,7 @@ public sealed class SvmVirtualMachine : IVirtualMachine
             tokens = instruction.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
+        
 
         // Ensure the correct number of operands
         if (tokens.Length > 3)

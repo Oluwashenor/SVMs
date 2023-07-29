@@ -1,21 +1,14 @@
-﻿namespace SVM.SimpleMachineLanguage;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-/// <summary>
-/// Implements the SML Incr  instruction
-/// Increments the integer value stored on top of the stack, 
-/// leaving the result on the stack
-/// </summary>
-public class Incr : BaseInstruction
+namespace SVM.SimpleMachineLanguage
 {
-    #region TASK 3 - TO BE IMPLEMENTED BY THE STUDENT
-    #endregion
-
-    #region Constants
-    protected const string NonStringValue = "The value is a non string value ( at [line {0}] {1})";
-    #endregion
-
-
-    #region IInstruction Members
+    public class EquInt : BaseInstruction
+    {
+         #region IInstruction Members
     public override void Run()
     {
         try
@@ -32,7 +25,7 @@ public class Incr : BaseInstruction
             }
             else
             {
-                throw new SvmRuntimeException("Invalid type found");
+                throw new SvmRuntimeException("Data on stack is not of type Int");
             }
         }
         catch (InvalidCastException)
@@ -43,4 +36,6 @@ public class Incr : BaseInstruction
     }
 
     #endregion
+
+    }
 }
