@@ -16,7 +16,7 @@ namespace SVM.SimpleMachineLanguage
             var op1 = VirtualMachine.Stack.Pop();
             var op2 = VirtualMachine.Stack.Pop();
             VirtualMachine.Stack.Push(op1);
-            if (op1.GetType() != op2.GetType())
+            if (op1.GetType().Name != op2.GetType().Name)
             {
                     string branch_location = this.Operands[1].ToString();
                     SvmVirtualMachine svmVm = (SvmVirtualMachine)this.VirtualMachine;
