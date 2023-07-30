@@ -96,6 +96,11 @@ internal static class JITCompiler
 
             foreach (string assemblyFile in assemblyFiles)
             {
+                bool matched = VerifyAssembly(assemblyFile);
+                if (!matched)
+                {
+                    throw new SvmRuntimeException("Invalid Hash Values : please update the config file" + opcode);
+                }
                 try
                 {
                     Assembly assembly = Assembly.LoadFrom(assemblyFile);
@@ -131,8 +136,22 @@ internal static class JITCompiler
 
     public static bool VerifyAssembly(string assembly)
     {
-        string configpath = @"C:\Users\Shenor\Downloads\Download SVM\SVM_-1769111514\SVM\VirtualMachine\";
-        string dllPath = @"C:\Users\Shenor\Downloads\Download SVM\SVM_-1769111514\SVM\bin\Debug\";
+        string solutionRootPath = string.Empty;
+        string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
+        for (int i = 0; i < 6; i++)
+        {
+            DirectoryInfo parentDirectory = Directory.GetParent(currentDirectory);
+
+            if (parentDirectory == null || parentDirectory.Name.Equals("SVM", StringComparison.OrdinalIgnoreCase))
+            {
+                solutionRootPath = parentDirectory.FullName;
+                break;
+            }
+            currentDirectory = parentDirectory.FullName;
+        }
+        string configpath = $"{solutionRootPath}\\VirtualMachine\\";
+        string dllPath = AppDomain.CurrentDomain.BaseDirectory;
         string assemblyFileName = Path.GetFileName(assembly);
         string assemblyFile = Path.Combine(dllPath, assemblyFileName);
         string configfile = "config.json";

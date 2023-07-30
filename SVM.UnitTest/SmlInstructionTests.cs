@@ -1,6 +1,4 @@
-using Moq;
 using SVM.SimpleMachineLanguage;
-using SVM.VirtualMachine;
 using System.Collections;
 
 namespace SVM.UnitTest
@@ -39,6 +37,33 @@ namespace SVM.UnitTest
         {
             var sample = new TestVirtualMachine();
             var instruction = new Decr();
+            instruction.VirtualMachine = sample;
+
+            instruction.Run();
+            sample.Stack.Peek();
+        }
+
+        [TestMethod]
+        public void EquIntInstruction_Run()
+        {
+            var sample = new TestVirtualMachine();
+            var instruction = new EquInt();
+            string[] operands = {"5", "addone"}; 
+            instruction.Operands = operands;
+            instruction.VirtualMachine = sample;
+
+            instruction.Run();
+            sample.Stack.Peek();
+        }
+
+        [TestMethod]
+        public void NotEquInstruction_Run()
+        {
+            var sample = new TestVirtualMachine();
+            sample.Stack.Push(42);
+            var instruction = new NotEqu();
+            string[] operands = { "addone" };
+            instruction.Operands = operands;
             instruction.VirtualMachine = sample;
 
             instruction.Run();
